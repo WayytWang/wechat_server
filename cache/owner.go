@@ -3,7 +3,7 @@ package cache
 import (
 	uuid "github.com/satori/go.uuid"
 	"sync"
-	"wechat_server/user"
+	"wechat_server/api/user"
 	"wechat_server/utils"
 )
 

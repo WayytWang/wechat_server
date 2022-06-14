@@ -3,8 +3,8 @@ package room
 import (
 	"github.com/pkg/errors"
 	"github.com/satori/go.uuid"
+	"wechat_server/api/user"
 	"wechat_server/cache"
-	"wechat_server/user"
 )
 
 type Room struct {
@@ -40,7 +40,7 @@ func (r *Room) AddPeers(peer *user.User) {
 	r.peers = append(r.peers, peer)
 }
 
-func (r *Room) GetPeers() []*user.User{
+func (r *Room) GetPeers() []*user.User {
 	return r.peers
 }
 
