@@ -1,14 +1,13 @@
 package utils
 
 import (
-	"net"
 	"testing"
 )
 
 func TestExternalIP(t *testing.T) {
 	tests := []struct {
 		name    string
-		want    net.IP
+		want    string
 		wantErr bool
 	}{
 		{},
@@ -20,7 +19,7 @@ func TestExternalIP(t *testing.T) {
 				t.Errorf("ExternalIP() error = %v, wantErr %v", err, tt.wantErr)
 				return
 			}
-			t.Logf("ip:%+v",got)
+			t.Logf("ip:%s", got)
 		})
 	}
 }

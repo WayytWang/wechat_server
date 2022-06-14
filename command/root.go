@@ -6,12 +6,12 @@ import (
 )
 
 func init() {
-	rootCmd.AddCommand(InitExecCommand())
+	rootCmd.AddCommand(InitRoomCommand())
 }
 
 var rootCmd = &cobra.Command{
-	Use:   "wechat [COMMANDS]",
-	Short: "文档库及目录创建工具",
+	Use:   "wechat",
+	Short: "端对端聊天,无渠道保存任何个人信息和聊天内容,想喷就喷,无负担聊天",
 	Run: func(cmd *cobra.Command, args []string) {
 		// Do Stuff Here
 	},

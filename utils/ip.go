@@ -5,12 +5,11 @@ import (
 	"net"
 )
 
-
 // ExternalIP 获取公网IP地址
-func ExternalIP() (net.IP, error) {
+func ExternalIP() (string, error) {
 	iFaces, err := net.Interfaces()
 	if err != nil {
-		return nil, err
+		return "", err
 	}
 	for _, iFace := range iFaces {
 		if iFace.Flags&net.FlagUp == 0 {
@@ -21,18 +20,18 @@ func ExternalIP() (net.IP, error) {
 		}
 		adders, err := iFace.Addrs()
 		if err != nil {
-			err = errors.Wrap(err,"[ExternalIP] [iFace.Addrs()]")
-			return nil, err
+			err = errors.Wrap(err, "[ExternalIP] [iFace.Addrs()]")
+			return "", err
 		}
 		for _, addr := range adders {
 			ip := getIpFromAddr(addr)
 			if ip == nil {
 				continue
 			}
-			return ip, nil
+			return ip.String(), nil
 		}
 	}
-	return nil, errors.Wrap(err,"Your machine may not have Internet access")
+	return "", errors.Wrap(err, "Your machine may not have Internet access")
 }
 
 //获取ip
