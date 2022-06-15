@@ -1,7 +1,7 @@
 package convert
 
 import (
-	"wechat_server/core/room"
+	"wechat_server/core/model"
 	"wechat_server/core/user"
 	"wechat_server/interactive/imodel"
 )
@@ -25,10 +25,10 @@ func FromUsers(us []*user.User) []imodel.User {
 	return iUs
 }
 
-func FromRoom(r *room.Room) imodel.Room{
+func FromRoom(r *model.Room) imodel.Room{
 	return imodel.Room{
 		ID:      r.ID,
-		Name:    r.ID,
+		Name:    r.Name,
 		Creator: FromUser(r.Creator),
 		Peers:   FromUsers(r.Peers),
 	}

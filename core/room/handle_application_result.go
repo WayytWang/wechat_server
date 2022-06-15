@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"github.com/pkg/errors"
 	"os"
+	"wechat_server/core/model"
 	"wechat_server/interactive/convert"
 	"wechat_server/interactive/imodel"
 	"wechat_server/utils"
@@ -25,17 +26,16 @@ func (h *ApplicationResultMsgHandler) Handle(msg imodel.Message) error {
 	}
 	// 成功加入,更新内存
 	r := result.Room
-	cr := GetRoomMap().GetRoom(r.ID)
+	cr := model.GetRoomMap().GetRoom(r.ID)
 	cr.AddPeers(r.Creator)
 	cr.Name = r.Name
-	GetRoomMap().AddRoom(r.ID,cr)
-	fmt.Printf("room peers:%+v \n",cr.GetPeers())
+	model.GetRoomMap().AddRoom(r.ID,cr)
 	printStr := fmt.Sprintf("您已成功加入房间[%s]",cr.Name)
 	utils.TipsPrint(printStr)
 	return nil
 }
 
-func parseApplicationResultMsgHandler(msg imodel.Message) (result Result,err error) {
+func parseApplicationResultMsgHandler(msg imodel.Message) (result model.Result,err error) {
 	// 解析消息内容
 	bytes, err := json.Marshal(msg.Content)
 	if err != nil {

@@ -3,17 +3,18 @@ package room
 import (
 	"fmt"
 	"net"
+	"wechat_server/core/model"
 	"wechat_server/tcp_conn"
 )
 
 // HandleNotify 循环监听tcp请求 todo:错误处理
-func (r *Room) HandleNotify() {
+func HandleNotify(r *model.Room) {
 	address := fmt.Sprintf("%s:%s", r.Listener.Ip, r.Listener.Port)
 	lister, err := net.Listen("tcp", address)
 	if err != nil {
 		panic(any(err))
 	}
-	r.lister = lister
+	r.Lister = lister
 	defer lister.Close()
 
 	for {

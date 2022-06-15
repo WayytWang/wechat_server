@@ -7,6 +7,7 @@ import (
 	"github.com/pkg/errors"
 	"os"
 	"strings"
+	"wechat_server/core/model"
 	"wechat_server/interactive/convert"
 	"wechat_server/interactive/imodel"
 	"wechat_server/tcp_conn"
@@ -26,7 +27,7 @@ func (h *ApplicationMsgHandler) Handle(msg imodel.Message) error {
 	// 用户消息
 	callerUser := msg.SendUser
 	// 获取房间信息
-	roomInfo := GetRoomMap().GetRoom(apply.ApplyRoomID)
+	roomInfo := model.GetRoomMap().GetRoom(apply.ApplyRoomID)
 	if roomInfo == nil {
 		utils.TipsPrint(fmt.Sprintf("申请加入房间的房间号[%s]不存在", apply.ApplyRoomID))
 		return nil
@@ -59,7 +60,10 @@ func (h *ApplicationMsgHandler) Handle(msg imodel.Message) error {
 			IsOk: true,
 		}
 		backMsg := imodel.CreateApplicationResultMsg(result)
-		return tcp_conn.TcpSendMsg(callerUser.Ip, callerUser.Port, backMsg)
+		err = tcp_conn.TcpSendMsg(callerUser.Ip, callerUser.Port, backMsg)
+		if err != nil {
+			return err
+		}
 		// 将申请者信息加入room Peers
 		// roomInfo.AddPeers(callerUser)
 		// 通知所有人，房间有新节点加入
@@ -68,7 +72,7 @@ func (h *ApplicationMsgHandler) Handle(msg imodel.Message) error {
 	return nil
 }
 
-func parseApplicationMsg(msg imodel.Message) (apply Application,err error) {
+func parseApplicationMsg(msg imodel.Message) (apply model.Application,err error) {
 	// 解析消息内容
 	bytes, err := json.Marshal(msg.Content)
 	if err != nil {
