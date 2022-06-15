@@ -4,8 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"github.com/spf13/cobra"
-	"wechat_server/api/room"
-	"wechat_server/api/user"
+	"wechat_server/core"
+	"wechat_server/core/user"
 )
 
 // 创建房间参数
@@ -17,9 +17,9 @@ var (
 
 // 加入房间参数
 var (
-	share string
+	share      string
 	joinerName string
-	joinMsg string
+	joinMsg    string
 	joinerPort string
 )
 
@@ -54,7 +54,7 @@ var RoomCreateCommand = &cobra.Command{
 	},
 	RunE: func(c *cobra.Command, args []string) error {
 		user.SetMyInfo(yourName, yourPort)
-		room.CreatRoom(roomName)
+		core.CreatRoom(roomName)
 		return nil
 	},
 }
@@ -76,12 +76,12 @@ var RoomJoinCommand = &cobra.Command{
 	},
 	RunE: func(c *cobra.Command, args []string) error {
 		user.SetMyInfo(joinerName, joinerPort)
-		roomName,err := room.JoinRoomApplication(share,joinMsg)
+		roomName, err := core.JoinRoomApplication(share, joinMsg)
 		if err != nil {
 			return err
 		}
 		if roomName != "" {
-			fmt.Printf("您已成功加入房间[%s],可以开始聊天 \n",roomName)
+			fmt.Printf("您已成功加入房间[%s],可以开始聊天 \n", roomName)
 		}
 		return nil
 	},
