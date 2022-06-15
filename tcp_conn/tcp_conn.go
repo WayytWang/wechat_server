@@ -27,7 +27,7 @@ func CreateTcpConn(conn net.Conn) *TcpConn {
 	return &TcpConn{conn: conn}
 }
 
-func TcpSendMsg(ip,port string,msg imodel.Message) error{
+func TcpSendMsg(ip, port string, msg imodel.Message) error {
 	tc, err := GetConnByUser(&TcpInfo{
 		Ip:   ip,
 		Port: port,
@@ -55,7 +55,7 @@ func (tc *TcpConn) SendMsg(msg imodel.Message) (err error) {
 	return
 }
 
-func (tc *TcpConn) ParseMsg() (msg imodel.Message,err error)  {
+func (tc *TcpConn) ParseMsg() (msg imodel.Message, err error) {
 	// 解析消息来源
 	remoteAddr := tc.conn.RemoteAddr().String()
 	remoteSli := strings.Split(remoteAddr, ":")
@@ -67,21 +67,21 @@ func (tc *TcpConn) ParseMsg() (msg imodel.Message,err error)  {
 	buf := make([]byte, 20000)
 	length, err := tc.conn.Read(buf)
 	if err != nil {
-		err = errors.Wrap(err,"[TcpConn] [ParseMsg] tc.conn.Read(buf) error")
-		return msg,err
+		err = errors.Wrap(err, "[TcpConn] [ParseMsg] tc.conn.Read(buf) error")
+		return msg, err
 	}
 	err = json.Unmarshal(buf[:length], &msg)
 	if err != nil {
-		err = errors.Wrap(err,"[TcpConn] [ParseMsg] json.Unmarshal(buf[:length], &msg) error")
-		return msg,err
+		err = errors.Wrap(err, "[TcpConn] [ParseMsg] json.Unmarshal(buf[:length], &msg) error")
+		return msg, err
 	}
 
 	// 校验
 	if remoteIp != msg.SendUser.Ip {
 		err = errors.New("[TcpConn] [ParseMsg] 消息发送方伪造信息")
-		return msg,err
+		return msg, err
 	}
-	return msg,err
+	return msg, err
 }
 
 func GetConnByUser(tcpInfo *TcpInfo) (*TcpConn, error) {

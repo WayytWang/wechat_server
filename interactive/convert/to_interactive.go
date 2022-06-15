@@ -17,7 +17,7 @@ func FromUser(u *user.User) imodel.User {
 }
 
 func FromUsers(us []*user.User) []imodel.User {
-	iUs := make([]imodel.User,0)
+	iUs := make([]imodel.User, 0)
 	for i := range us {
 		u := FromUser(us[i])
 		iUs = append(iUs, u)
@@ -25,7 +25,7 @@ func FromUsers(us []*user.User) []imodel.User {
 	return iUs
 }
 
-func FromRoom(r *model.Room) imodel.Room{
+func FromRoom(r *model.Room) imodel.Room {
 	return imodel.Room{
 		ID:      r.ID,
 		Name:    r.Name,

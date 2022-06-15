@@ -8,7 +8,7 @@ import "fmt"
 
 // TipsPrint 提示信息
 func TipsPrint(content string) {
-	fmt.Println("[tips]"+content)
+	fmt.Println("[tips]" + content)
 }
 
 // 聊天信息

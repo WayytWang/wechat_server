@@ -17,7 +17,7 @@ func FromIUser(u imodel.User) user.User {
 }
 
 func FromIUsers(iUs []imodel.User) []*user.User {
-	us := make([]*user.User,0)
+	us := make([]*user.User, 0)
 	for i := range iUs {
 		u := FromIUser(iUs[i])
 		us = append(us, &u)
@@ -35,10 +35,10 @@ func FromIApplication(a imodel.Application) model.Application {
 func FromIRoom(r imodel.Room) model.Room {
 	c := FromIUser(r.Creator)
 	return model.Room{
-		ID:       r.ID,
-		Name:     r.Name,
-		Creator:  &c,
-		Peers: FromIUsers(r.Peers),
+		ID:      r.ID,
+		Name:    r.Name,
+		Creator: &c,
+		Peers:   FromIUsers(r.Peers),
 	}
 }
 
@@ -47,5 +47,15 @@ func FromIApplicationResult(r imodel.Result) model.Result {
 	return model.Result{
 		Room: &rm,
 		IsOk: r.IsOk,
+	}
+}
+
+func FromINewPeerAdded(p imodel.NewPeerAdded) model.NewPeerAdded {
+	peers:= FromIUsers(p.Peers)
+	peer:= FromIUser(p.NewPeer)
+	return model.NewPeerAdded{
+		RoomID: p.RoomID,
+		NewPeer: &peer,
+		Peers:   peers,
 	}
 }

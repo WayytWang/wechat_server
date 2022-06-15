@@ -15,17 +15,17 @@ func JoinRoomApplication(shareStr string, joinMessage string) (string, error) {
 	ip, port, roomID := shareRoomStr.Parse()
 	// 获取与房主的tcp连接
 	myInfo := user.GetMyInfo()
-	r := model.InitEmptyRoom(roomID,myInfo)
+	r := model.InitEmptyRoom(roomID, myInfo)
 	// 构建消息内容
-	application := imodel.CreateApplication(roomID,joinMessage)
+	application := imodel.CreateApplication(roomID, joinMessage)
 	applyMsg := imodel.CreateApplicationMsg(application)
 	// 给房主发送加入申请消息
-	err := tcp_conn.TcpSendMsg(ip,port,applyMsg)
+	err := tcp_conn.TcpSendMsg(ip, port, applyMsg)
 	if err != nil {
 		return "", err
 	}
 	utils.TipsPrint("等待房主的审批结果")
 	go room.HandleNotify(r)
-	model.GetRoomMap().AddRoom(r.ID,r)
+	model.GetRoomMap().AddRoom(r.ID, r)
 	return "", nil
 }

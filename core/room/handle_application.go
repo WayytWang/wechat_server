@@ -20,12 +20,12 @@ type ApplicationMsgHandler struct {
 
 func (h *ApplicationMsgHandler) Handle(msg imodel.Message) error {
 	// 解析消息内容
-	apply,err := parseApplicationMsg(msg)
+	apply, err := parseApplicationMsg(msg)
 	if err != nil {
 		return err
 	}
 	// 用户消息
-	callerUser := msg.SendUser
+	callerUser := convert.FromIUser(msg.SendUser)
 	// 获取房间信息
 	roomInfo := model.GetRoomMap().GetRoom(apply.ApplyRoomID)
 	if roomInfo == nil {
@@ -64,26 +64,41 @@ func (h *ApplicationMsgHandler) Handle(msg imodel.Message) error {
 		if err != nil {
 			return err
 		}
-		// 将申请者信息加入room Peers
-		// roomInfo.AddPeers(callerUser)
 		// 通知所有人，房间有新节点加入
-
+		nowPeers := roomInfo.GetPeers()
+		if len(nowPeers) > 0 {
+			peerAdded := imodel.NewPeerAdded{
+				RoomID: roomInfo.ID,
+				NewPeer: msg.SendUser,
+				Peers:   convert.FromUsers(nowPeers),
+			}
+			notifyMsg := imodel.CreateNewPeerAddedMsg(peerAdded)
+			for _, peer := range roomInfo.GetPeers() {
+				err = tcp_conn.TcpSendMsg(peer.Ip, peer.Port, notifyMsg)
+				if err != nil {
+					fmt.Println(err)
+					continue
+				}
+			}
+		}
+		roomInfo.AddPeers(&callerUser)
+		model.GetRoomMap().AddRoom(roomInfo.ID,roomInfo)
 	}
 	return nil
 }
 
-func parseApplicationMsg(msg imodel.Message) (apply model.Application,err error) {
+func parseApplicationMsg(msg imodel.Message) (apply model.Application, err error) {
 	// 解析消息内容
 	bytes, err := json.Marshal(msg.Content)
 	if err != nil {
 		err = errors.Wrap(err, "[ApplicationMsgHandler] [parseApplicationMsg] json.Marshal(msg.Content)")
-		return apply,err
+		return apply, err
 	}
 	var iApply imodel.Application
 	err = json.Unmarshal(bytes, &iApply)
 	if err != nil {
 		err = errors.Wrap(err, "[ApplicationMsgHandler] [parseApplicationMsg] json.Unmarshal(bytes,&apply)")
-		return apply,err
+		return apply, err
 	}
 	apply = convert.FromIApplication(iApply)
 	return

@@ -16,7 +16,7 @@ type ApplicationResultMsgHandler struct {
 }
 
 func (h *ApplicationResultMsgHandler) Handle(msg imodel.Message) error {
-	result,err := parseApplicationResultMsgHandler(msg)
+	result, err := parseApplicationResultMsg(msg)
 	if err != nil {
 		return err
 	}
@@ -27,26 +27,35 @@ func (h *ApplicationResultMsgHandler) Handle(msg imodel.Message) error {
 	// 成功加入,更新内存
 	r := result.Room
 	cr := model.GetRoomMap().GetRoom(r.ID)
+	cr.Creator = r.Creator
+	cr.Peers = r.Peers
 	cr.AddPeers(r.Creator)
 	cr.Name = r.Name
-	model.GetRoomMap().AddRoom(r.ID,cr)
-	printStr := fmt.Sprintf("您已成功加入房间[%s]",cr.Name)
+	model.GetRoomMap().AddRoom(r.ID, cr)
+	peerStr := ""
+	for i, peer := range cr.GetPeers() {
+		peerStr += peer.Name
+		if i < len(cr.GetPeers())-1 {
+			peerStr += ","
+		}
+	}
+	printStr := fmt.Sprintf("您已成功加入房间[%s],房间内现有成员[%s]", cr.Name,peerStr)
 	utils.TipsPrint(printStr)
 	return nil
 }
 
-func parseApplicationResultMsgHandler(msg imodel.Message) (result model.Result,err error) {
+func parseApplicationResultMsg(msg imodel.Message) (result model.Result, err error) {
 	// 解析消息内容
 	bytes, err := json.Marshal(msg.Content)
 	if err != nil {
-		err = errors.Wrap(err, "[ApplicationResultMsgHandler] [parseApplicationResultMsgHandler] json.Marshal(msg.Content)")
-		return result,err
+		err = errors.Wrap(err, "[ApplicationResultMsgHandler] [parseApplicationResultMsg] json.Marshal(msg.Content)")
+		return result, err
 	}
 	var iResult imodel.Result
 	err = json.Unmarshal(bytes, &iResult)
 	if err != nil {
-		err = errors.Wrap(err, "[ApplicationResultMsgHandler] [parseApplicationResultMsgHandler] json.Unmarshal(bytes,&apply)")
-		return result,err
+		err = errors.Wrap(err, "[ApplicationResultMsgHandler] [parseApplicationResultMsg] json.Unmarshal(bytes,&apply)")
+		return result, err
 	}
 	result = convert.FromIApplicationResult(iResult)
 	return

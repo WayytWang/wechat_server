@@ -45,3 +45,10 @@ func CreateApplicationResultMsg(content Result) Message {
 		Content: content,
 	}
 }
+
+func CreateNewPeerAddedMsg(content NewPeerAdded) Message{
+	return Message{
+		Typ:     TypNewPeerAddedMsg,
+		Content: content,
+	}
+}

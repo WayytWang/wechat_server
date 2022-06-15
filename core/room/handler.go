@@ -17,7 +17,7 @@ func CreateHandler(msgType int) Handler {
 	case imodel.TypApplicationResultMsg:
 		return &ApplicationResultMsgHandler{}
 	case imodel.TypNewPeerAddedMsg:
-		return &ApplicationNewPeerAddedMsg{}
+		return &NewPeerAddedHandler{}
 	}
 	return nil
 }

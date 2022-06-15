@@ -10,7 +10,7 @@ type Room struct {
 	ID   string
 	Name string
 
-	Creator *user.User
+	Creator  *user.User
 	Listener *user.User
 	Lister   net.Listener
 
@@ -32,7 +32,7 @@ func InitRoom(id, name string, creator *user.User) *Room {
 }
 
 // InitEmptyRoom 被批准加入房间前内存中保存的房间信息
-func InitEmptyRoom(id string,listener *user.User) *Room {
+func InitEmptyRoom(id string, listener *user.User) *Room {
 	return &Room{
 		ID:       id,
 		Listener: listener,

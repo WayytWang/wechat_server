@@ -24,7 +24,7 @@ func HandleNotify(r *model.Room) {
 			continue
 		}
 		tc := tcp_conn.CreateTcpConn(conn)
-		msg,err := tc.ParseMsg()
+		msg, err := tc.ParseMsg()
 		if err != nil {
 			fmt.Printf("[Room] [HandleNotify] tc.ParseMsg() error: %+v \n", err)
 			continue
