@@ -1,7 +1,7 @@
 package convert
 
 import (
-	"wechat_server/core/application"
+	"wechat_server/core/room"
 	"wechat_server/core/user"
 	"wechat_server/interactive/imodel"
 )
@@ -16,15 +16,36 @@ func FromIUser(u imodel.User) user.User {
 	}
 }
 
-func FromIApplication(a imodel.Application) application.Application {
-	return application.Application{
+func FromIUsers(iUs []imodel.User) []*user.User {
+	us := make([]*user.User,0)
+	for i := range iUs {
+		u := FromIUser(iUs[i])
+		us = append(us, &u)
+	}
+	return us
+}
+
+func FromIApplication(a imodel.Application) room.Application {
+	return room.Application{
 		ApplyRoomID:  a.ApplyRoomID,
 		ApplyContent: a.ApplyContent,
 	}
 }
 
-func FromIApplicationResult(r imodel.Result) application.Result {
-	return application.Result{
+func FromIRoom(r imodel.Room) room.Room {
+	c := FromIUser(r.Creator)
+	return room.Room{
+		ID:       r.ID,
+		Name:     r.Name,
+		Creator:  &c,
+		Peers: FromIUsers(r.Peers),
+	}
+}
+
+func FromIApplicationResult(r imodel.Result) room.Result {
+	rm := FromIRoom(r.Room)
+	return room.Result{
+		Room: &rm,
 		IsOk: r.IsOk,
 	}
 }

@@ -7,5 +7,5 @@ type Room struct {
 	// 创建者
 	Creator User
 	// 房间成员
-	peers []User
+	Peers []User
 }

@@ -15,29 +15,29 @@ type Room struct {
 	lister  net.Listener
 
 	mutex sync.RWMutex
-	// 房间成员
-	peers []*user.User
+	// 房间成员 不包括自己
+	Peers []*user.User
 }
 
 // InitRoom 创建房间时调用
 func InitRoom(id, name string, creator *user.User) *Room {
 	return &Room{
-		ID:      id,
-		Name:    name,
-		Creator: creator,
+		ID:       id,
+		Name:     name,
+		Creator:  creator,
 		Listener: creator,
-		mutex:   sync.RWMutex{},
-		peers:   make([]*user.User, 0),
+		mutex:    sync.RWMutex{},
+		Peers:    make([]*user.User, 0),
 	}
 }
 
 // InitEmptyRoom 被批准加入房间前内存中保存的房间信息
 func InitEmptyRoom(id string,listener *user.User) *Room {
 	return &Room{
-		ID:    id,
+		ID:       id,
 		Listener: listener,
-		mutex: sync.RWMutex{},
-		peers: make([]*user.User, 0),
+		mutex:    sync.RWMutex{},
+		Peers:    make([]*user.User, 0),
 	}
 }
 
@@ -64,11 +64,11 @@ func InitEmptyRoom(id string,listener *user.User) *Room {
 func (r *Room) AddPeers(peer *user.User) {
 	r.mutex.Lock()
 	defer r.mutex.Unlock()
-	r.peers = append(r.peers, peer)
+	r.Peers = append(r.Peers, peer)
 }
 
 func (r *Room) GetPeers() []*user.User {
 	r.mutex.RLock()
 	defer r.mutex.RUnlock()
-	return r.peers
+	return r.Peers
 }
